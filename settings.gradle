@@ -1,0 +1,3 @@
+include ':app', ':testlibrary'
+
+println("初始化阶段开始执行...")
