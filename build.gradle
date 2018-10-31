@@ -121,10 +121,10 @@ project("app") { appProject ->
 //    version '1.0.0-release'
     //或者导入其他的插件
     apply plugin: 'com.android.application'
-    dependencies {
-        //依赖其他的库
-        implementation 'com.google.code.gson:gson:2.8.5'
-    }
+//    dependencies {
+//        //依赖其他的库
+//        implementation 'com.google.code.gson:gson:2.8.5'
+//    }
 
     android {
         //可以加入其他的配置信息
@@ -134,13 +134,27 @@ project("app") { appProject ->
 /**
  * 配置当前rootproject和subproject的所有project
  */
-allprojects {
+allprojects { project ->
     group 'com.army'
     version '1.0.0-release'
+
+    if (project.plugins.hasPlugin('com.android.library') || project.plugins.hasPlugin("com.android.application")) {
+        dependencies {
+            //依赖其他的库
+            implementation 'com.google.code.gson:gson:2.8.5'
+        }
+    }
 }
 
 subprojects { project ->
-    if (project.plugins.hasPlugin("com.android.library")) {
+    //不知道为什么，这里又不行了，提示找不到implementation或者compile
+//    project.dependencies {
+//        compile 'com.squareup.retrofit2:retrofit:2.4.0'
+//    }
+//    dependencies {
+//        implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+//    }
+    if (project.plugins.hasPlugin('com.android.library')) {
         apply from: '../publishToMaven.gradle'
     }
 }
