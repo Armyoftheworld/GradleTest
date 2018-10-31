@@ -1,0 +1,12 @@
+ext {
+    android = [
+            compileSdkVersion: 27,
+            minSdkVersion    : 15,
+            targetSdkVersion : 27
+    ]
+
+    dependence = [
+            'appcompat-v7'     : 'com.android.support:appcompat-v7:27.1.1',
+            'constraint-layout': 'com.android.support.constraint:constraint-layout:1.1.3'
+    ]
+}

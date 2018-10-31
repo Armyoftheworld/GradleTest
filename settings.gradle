@@ -1,3 +1,6 @@
-include ':app', ':testlibrary'
+include ':app'
+if (hasProperty("isLoadTest") ? isLoadTest.toBoolean() : false) {
+    include ':testlibrary'
+}
 
 println("初始化阶段开始执行...")
