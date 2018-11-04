@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.dependence['appcompat-v7']
-    implementation (rootProject.ext.dependence['constraint-layout']) {
+    implementation(rootProject.ext.dependence['constraint-layout']) {
         //移除库里的某个库
         exclude module: "support-v4"
         exclude group: "com.android.support"
@@ -33,4 +33,44 @@ dependencies {
     }
     //只在编译期引入，打包的时候不会打进去
     compileOnly rootProject.ext.dependence.okhttp3
+}
+
+task("copyApkWindows") {
+    doLast {
+        //gradle执行阶段去执行
+        def sourcePath = "E:\\Blog.zip"
+        def destinationPath = "C:\\Users\\Army\\Desktop"
+        def command = "copy ${sourcePath}/b ${destinationPath}"
+        //在此方法中可以调用系统配置的命令
+        //不知道为什么，windows下的copy命令一直报sourcePath指向的文件找不到
+        //直接在命令行里执行该命令可以执行成功
+        exec {
+            try {
+                workingDir "e:\\"
+                commandLine command
+                println('the command is execute success')
+            } catch (GradleException e) {
+                println('the command is execute failed')
+            }
+        }
+    }
+}
+
+//没试过，不知道行不行，在Mac上面可以尝试
+task("copyApkLinux") {
+    doLast {
+        //gradle执行阶段去执行
+        def sourcePath = buildDir.absolutePath + "/outputs/apk/debug/app-debug.apk"
+        def destinationPath = "/Users/Army/Downloads/"
+        def command = "mv -f ${sourcePath} ${destinationPath}"
+        exec {
+            try {
+                executable "bask"
+                args "-c", command
+                println('the command is execute success')
+            } catch (GradleException e) {
+                println('the command is execute failed')
+            }
+        }
+    }
 }
