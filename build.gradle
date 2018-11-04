@@ -159,5 +159,73 @@ subprojects { project ->
     }
 }
 
+//获取当前项目的路径，build文件夹的路径和根项目的路径
+//allprojects {
+//    println "getRootDir().absolutePath = ${rootDir.absolutePath}"
+//    println "getBuildDir().absolutePath = ${buildDir.absolutePath}"
+//    println "getProjectDir().absolutePath = ${projectDir.absolutePath}"
+//    //使用file()方法获取传入的相对路径的文件对象，入参是相对于当前gradle所在项目的相对路径
+//    //文件不存在也返回一个文件对象
+//    println file("build")
+//}
+
+//文件的复制，使用自带的方法
+//copy {
+//    from project("app").projectDir.absolutePath + File.separator + "proguard-rules.pro"
+//    into rootDir
+//}
+
+//文件夹的复制，不知道为何.gitignore文件复制不过去
+//copy {
+//    from(project("app").projectDir)
+//    exclude("*.iml", "build/**")
+//    //好像加了这句话就内部报错了，因为不执行复制了
+////    include(".gitignore")
+//    into buildDir
+//    //重命名每个文件的名字
+//    rename {
+//        //这里的it是每个复制的文件的名字
+//        println(it)
+//    }
+//}
+
+//文件树的遍历
+fileTree("app") { fileTree ->
+    fileTree.visit { fileVisitDetail ->
+//        println fileVisitDetail.name
+//        println fileVisitDetail.file.absolutePath
+    }
+}
+
+buildscript { ScriptHandler scriptHandler ->
+    //配置我们工程的仓库地址
+    scriptHandler.repositories { RepositoryHandler repositoryHandler ->
+        //通常repositoryHandler.可以省略
+        repositoryHandler.jcenter()
+        repositoryHandler.mavenCentral()
+        repositoryHandler.mavenLocal()
+        //配置另外的maven地址
+        repositoryHandler.maven {
+            name "personal"
+            url "http://39.108.120.100:8090/nexus/repository"
+            //设置maven的账号密码，格式在credentials的注释里面有写
+            credentials {
+                username = "admin"
+                password = "admin123"
+            }
+        }
+    }
+
+    //配置我们工程的插件的依赖地址
+    scriptHandler.dependencies {
+        //就因为引入了这句话，所以可以在module里面调用apply plugin: 'com.android.application'
+        //或者apply plugin: 'com.android.library'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+
+
+
 
 

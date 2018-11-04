@@ -17,8 +17,20 @@ android {
     }
 }
 
+//为应用程序添加第三方库依赖
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.dependence['appcompat-v7']
-    implementation rootProject.ext.dependence['constraint-layout']
+    implementation (rootProject.ext.dependence['constraint-layout']) {
+        //移除库里的某个库
+        exclude module: "support-v4"
+        exclude group: "com.android.support"
+        exclude group: "com.android.support", module: "support-v4"
+        //禁止传递依赖，即当前项目无法调用本依赖库依赖的其他三方库
+        transitive false
+        //每次都从服务器拉取库文件
+        changing = true
+    }
+    //只在编译期引入，打包的时候不会打进去
+    compileOnly rootProject.ext.dependence.okhttp3
 }
