@@ -74,3 +74,45 @@ task("copyApkLinux") {
         }
     }
 }
+
+task helloTask(group: "army", description: "Test") {
+    println "I am helloTask"
+    doFirst {
+        println "the first first"
+    }
+    doFirst {
+        println "the second first"
+    }
+}
+//在外面的后写的先执行
+helloTask.doFirst {
+    println "the out first"
+}
+
+helloTask.doFirst {
+    println "the out first2"
+}
+
+tasks.create("helloTask2") {
+    group = "army"
+    description = "Test2"
+    println "I am helloTask2"
+}
+
+//配置阶段执行完毕，能找到所以的task
+afterEvaluate { project ->
+    def startTime, buildTime
+    def preBuild = project.tasks.getByName("preBuild")
+    preBuild.doFirst {
+        startTime = System.currentTimeMillis()
+        println "startTime is ${startTime}"
+    }
+    def build = project.tasks.getByName("build")
+    build.doLast {
+        buildTime = System.currentTimeMillis() - startTime
+        //单纯的编译时间
+        println "buildTime is ${buildTime}"
+    }
+}
+
+
