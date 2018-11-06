@@ -115,4 +115,66 @@ afterEvaluate { project ->
     }
 }
 
+task taskX {
+    println "taskX"
+}
+
+task taskY {
+    println "taskY"
+}
+
+//task taskZ(dependsOn: taskX) {
+//    println "taskZ"
+//}
+//task taskW(dependsOn: [taskX, taskY]) {
+//    println "taskW"
+//}
+//符号<<的意思就是doLast
+
+task lib1 << {
+    println "lib1"
+}
+task lib2 << {
+    println "lib2"
+}
+task nolib << {
+    println "nolib"
+}
+
+task taskW {
+    dependsOn project.tasks.findAll { task ->
+        return task.name.startsWith("lib")
+    }
+    doLast {
+        println "taskW"
+    }
+}
+//taskW.dependsOn(taskX, taskY)
+
+task handleXMLFile {
+    def sourceFile = file("release.xml")
+    def destDir = new File(buildDir, "generated/release/")
+    if (!destDir.exists()) {
+        destDir.mkdirs()
+    }
+    doLast {
+        def releases = new XmlParser().parse(sourceFile)
+        releases.release.each { release ->
+            def versionName = release.versionName.text()
+            def versionCode = release.versionCode.text()
+            def versionInfo = release.versionInfo.text()
+            def destFile = new File(destDir, "release_${versionName}.txt")
+            destFile.write("${versionName} -> ${versionCode} -> ${versionInfo}")
+        }
+    }
+}
+
+task testHandleXMLFile(dependsOn: handleXMLFile) {
+    def fileTree = fileTree(buildDir.absolutePath + "/generated/release/")
+    fileTree.visit {
+        println(it.name)
+    }
+}
+
+
 

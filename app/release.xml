@@ -1,0 +1,22 @@
+<releases>
+    <release>
+        <versionName>1.0.0</versionName>
+        <versionCode>100</versionCode>
+        <versionInfo>this is the 100th package</versionInfo>
+    </release>
+    <release>
+        <versionName>1.0.1</versionName>
+        <versionCode>101</versionCode>
+        <versionInfo>this is the 101th package</versionInfo>
+    </release>
+    <release>
+        <versionName>1.0.2</versionName>
+        <versionCode>102</versionCode>
+        <versionInfo>this is the 102th package</versionInfo>
+    </release>
+    <release>
+        <versionName>1.0.3</versionName>
+        <versionCode>103</versionCode>
+        <versionInfo>this is the 103th package</versionInfo>
+    </release>
+</releases>
