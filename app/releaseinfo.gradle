@@ -1,0 +1,81 @@
+//task的输入输出
+ext {
+    versionName = "1.0.2"
+    versionCode = 102
+    versionInfo = "这是第三个版本，添加了一些基础功能"
+    destFile = file("test.xml")
+    if (!destFile.exists()) {
+        destFile.createNewFile()
+    }
+}
+import groovy.xml.MarkupBuilder
+
+task writeReleaseTask {
+    //为task指定输入
+    inputs.property("versionName", this.versionName)
+    inputs.property("versionCode", this.versionCode)
+    inputs.property("versionInfo", this.versionInfo)
+    //为task指定输出
+    outputs.file this.destFile
+
+    doLast {
+        def properties = inputs.getProperties()
+        def versionData = new VersionData(properties)
+        def dest = outputs.files.singleFile
+        def sw = new StringWriter()
+        def xmlBuilder = new MarkupBuilder(sw)
+        if (dest.text == null || dest.text.isEmpty()) {
+            xmlBuilder.releases {
+                release {
+                    versionName(versionData.versionName)
+                    versionCode(versionData.versionCode)
+                    versionInfo(versionData.versionInfo)
+                }
+            }
+            dest.write(sw.toString(), "UTF-8")
+        } else {
+            def lines = dest.readLines()
+            xmlBuilder.release {
+                versionName(versionData.versionName)
+                versionCode(versionData.versionCode)
+                versionInfo(versionData.versionInfo)
+            }
+            def stringBuilder = new StringBuilder()
+            lines.eachWithIndex { String line, int index ->
+                if (index < lines.size() - 1) {
+                    stringBuilder.append(line).append("\r\n")
+                } else {
+                    stringBuilder.append(sw.toString()).append("\r\n")
+                    stringBuilder.append(line)
+                }
+            }
+            dest.write(stringBuilder.toString(), "UTF-8")
+        }
+    }
+}
+
+task readReleaseTask {
+    inputs.file this.destFile
+    doLast {
+        def file = inputs.files.singleFile
+        println file.text
+    }
+}
+
+class VersionData {
+    String versionName
+    int versionCode
+    String versionInfo
+
+    VersionData(Map<String, Object> properties) {
+        versionName = properties.versionName
+        versionCode = properties.versionCode
+        versionInfo = properties.versionInfo
+    }
+}
+
+task taskTestReadWrite(dependsOn: [writeReleaseTask, readReleaseTask]) {
+    doLast {
+        println "任务完成"
+    }
+}

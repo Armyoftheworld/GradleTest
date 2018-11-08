@@ -176,5 +176,6 @@ task testHandleXMLFile(dependsOn: handleXMLFile) {
     }
 }
 
+apply from: "releaseinfo.gradle"
 
 
