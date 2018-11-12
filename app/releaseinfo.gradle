@@ -74,6 +74,16 @@ class VersionData {
     }
 }
 
+afterEvaluate {
+    def buildTask = project.tasks.getByName("build")
+    if (buildTask == null) {
+        throw new GradleException("the build task not found")
+    }
+    buildTask.doLast {
+        writeReleaseTask.execute()
+    }
+}
+
 task taskTestReadWrite(dependsOn: [writeReleaseTask, readReleaseTask]) {
     doLast {
         println "任务完成"

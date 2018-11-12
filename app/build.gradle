@@ -15,6 +15,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = [
+                    'src/main/res',
+                    'src/main/res-player'
+            ]
+        }
+    }
+
+    flavorDimensions "channel"
+
+    productFlavors {
+        yingyongbao {
+            dimension "channel"
+        }
+        baidu {
+            dimension "channel"
+        }
+    }
 }
 
 //为应用程序添加第三方库依赖
@@ -178,4 +198,32 @@ task testHandleXMLFile(dependsOn: handleXMLFile) {
 
 apply from: "releaseinfo.gradle"
 
+//mustRunAfter怎么用
+task taskA {
+    doLast {
+        println "taskA"
+    }
+}
+
+task taskB {
+    mustRunAfter taskA
+    doLast {
+        println "taskB"
+    }
+}
+
+task taskC {
+    mustRunAfter taskB
+    doLast {
+        println "taskC"
+    }
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        println "variant.name = ${variant.name}"
+        println "variant.baseName = ${variant.baseName}"
+        println "variant.outputFile = ${variant.outputs.first().outputFile}"
+    }
+}
 
